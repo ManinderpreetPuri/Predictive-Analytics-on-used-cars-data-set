@@ -4,16 +4,20 @@
 
 ###################################################################################################
 #install.packages("psych", dependencies = TRUE)
-library(psych)
-#install.packages("corrplot", dependencies = TRUE)
-library(corrplot)
-#install.packages("ISLR")
-library("ISLR")
 #install.packages("SmartEDA")
+#install.packages("corrplot", dependencies = TRUE)
+#install.packages("ISLR")
+library(psych)
+library(corrplot)
+library("ISLR")
 library("SmartEDA")
 library(GGally)
 library(caret)
 library(qwraps2)
+library(plotly)
+library(dplyr)
+library(ggplot2)
+library(stats)
 
 #Configuring working directory
 setwd("C:/Users/Sazee/Desktop/BUS5PA/Assignment 1")
@@ -51,6 +55,13 @@ df$owner_count <- factor(df$owner_count, levels=c("1","2", "3", "4", "5", "6", "
 #"2004" is 17, "2005" is 16, "2006" is 15, "2007" is 14, "2008" is 13, "2009" is 12, "2010" is 11, "2011" is 10, "2012" is 9, 
 #"2013" is 8, "2014" is 7, "2015" is 6, "2016" is 5, "2017" is 4, "2018" is 3, "2019" is 2, "2020" is 1, "2021" is 0).
 df$age_car <- factor(df$year, levels=c("1990","1997","1998","1999","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021"), labels=c(31,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0))
+
+#Transforming age into a numeric parameter
+df$condition = as.numeric(as.character(df$condition))
+df$engine_cylinders = as.numeric(as.character(df$engine_cylinders))
+df$maximum_seating = as.numeric(as.character(df$maximum_seating))
+df$owner_count = as.numeric(as.character(df$owner_count))
+df$age_car = as.numeric(as.character(df$age_car))
 
 # Transform categorical (nominal) variables in to numerical. We will use One-hot encoding technique:
 
@@ -113,6 +124,11 @@ mean(df$length)
 mean(df$mileage, na.rm = TRUE)
 mean(df$wheelbase)
 mean(df$width)
+mean(df$age_car)
+mean(df$condition)
+mean(df$owner_count)
+mean(df$maximum_seating)
+mean(df$engine_cylinders)
 
 
 #Median
@@ -130,6 +146,12 @@ median(df$length)
 median(df$mileage, na.rm = TRUE)
 median(df$wheelbase)
 median(df$width)
+median(df$age_car)
+median(df$condition)
+median(df$owner_count)
+median(df$maximum_seating)
+median(df$engine_cylinders)
+
 
 #Max
 max(df$price)
@@ -146,6 +168,11 @@ max(df$length)
 max(df$mileage, na.rm = TRUE)
 max(df$wheelbase)
 max(df$width)
+max(df$age_car)
+max(df$condition)
+max(df$owner_count)
+max(df$maximum_seating)
+max(df$engine_cylinders)
 
 #Standard Deviation
 sd(df$price)
@@ -162,6 +189,11 @@ sd(df$length)
 sd(df$mileage, na.rm = TRUE)
 sd(df$wheelbase)
 sd(df$width)
+sd(df$age_car)
+sd(df$condition)
+sd(df$owner_count)
+sd(df$maximum_seating)
+sd(df$engine_cylinders)
 
 #Calculating the count for each categorical variable.
 
@@ -216,39 +248,6 @@ cat("Total of number of values in owner_count parameter is:", total_owner_count)
 # We can also check the number of values in each category using summary command.
 summary(df$owner_count)
 
-# Count for "year" variable.
-sum(df$age_car == "31")
-sum(df$age_car == "24")
-sum(df$age_car == "23")
-sum(df$age_car == "22")
-sum(df$age_car == "21")
-sum(df$age_car == "20")
-sum(df$age_car == "19")
-sum(df$age_car == "18")
-sum(df$age_car == "17")
-sum(df$age_car == "16")
-sum(df$age_car == "15")
-sum(df$age_car == "14")
-sum(df$age_car == "13")
-sum(df$age_car == "12")
-sum(df$age_car == "11")
-sum(df$age_car == "10")
-sum(df$age_car == "9")
-sum(df$age_car == "8")
-sum(df$age_car == "7")
-sum(df$age_car == "6")
-sum(df$age_car == "5")
-sum(df$age_car == "4")
-sum(df$age_car == "3")
-sum(df$age_car == "2")
-sum(df$age_car == "1")
-sum(df$age_car == "0")
-total_age_car = sum(df$age_car == "31") + sum(df$age_car == "24") + sum(df$age_car == "23") + sum(df$age_car == "22") + sum(df$age_car == "21") + sum(df$age_car == "20") + sum(df$age_car == "19") + sum(df$age_car == "18") + sum(df$age_car == "17") + sum(df$age_car == "16") + sum(df$age_car == "15") + sum(df$age_car == "14") + sum(df$age_car == "13") + sum(df$age_car == "12") + sum(df$age_car == "11") + sum(df$age_car == "10") + sum(df$age_car == "9") + sum(df$age_car == "8") + sum(df$age_car == "7") + sum(df$age_car == "6") + sum(df$age_car == "5") + sum(df$age_car == "4") + sum(df$age_car == "3") + sum(df$age_car == "2") + sum(df$age_car == "1") + sum(df$age_car == "0")
-cat("Total of number of values in age_car parameter is:", total_age_car)
-
-# We can also check the number of values in each category using summary command.
-summary(df$age_car)
-
 # Count for "body_type" variable.
 sum(df$body_type_Hatchback)
 sum(df$body_type_Sedan)
@@ -299,6 +298,12 @@ hist(df$length, breaks= 154, col = 'Orange')
 hist(df$mileage, breaks= 154, col = 'Orange', na.rm = TRUE)
 hist(df$wheelbase, breaks= 154, col = 'Orange')
 hist(df$width, breaks= 154, col = 'Orange')
+hist(df$age_car, breaks= 154, col = 'Orange')
+hist(df$condition, breaks= 154, col = 'Orange')
+hist(df$maximum_seating, breaks= 154, col = 'Orange')
+hist(df$owner_count, breaks= 154, col = 'Orange')
+hist(df$engine_cylinders, breaks= 154, col = 'Orange')
+
 
 # Summary statistics
 
@@ -323,7 +328,12 @@ var(df$height)
 var(df$wheelbase)
 var(df$fuel_tank_volume)
 var(df$back_legroom)
+var(df$age_car)
 var(df$front_legroom, na.rm = TRUE)
+var(df$condition)
+var(df$maximum_seating)
+var(df$owner_count)
+var(df$engine_cylinders)
 
 #Range
 range_mileage = max(df$mileage, na.rm = TRUE) - min(df$mileage, na.rm = TRUE)
@@ -350,10 +360,21 @@ range_wheelbase = max(df$wheelbase) - min(df$wheelbase)
 range_wheelbase
 range_fuel_tank_volume = max(df$fuel_tank_volume) - min(df$fuel_tank_volume)
 range_fuel_tank_volume
+range_age_car = max(df$age_car) - min(df$age_car)
+range_age_car
 range_back_legroom = max(df$back_legroom) - min(df$back_legroom)
 range_back_legroom
 range_front_legroom = max(df$front_legroom, na.rm = TRUE) - min(df$front_legroom, na.rm = TRUE)
 range_front_legroom
+range_condition = max(df$condition) - min(df$condition)
+range_condition
+range_maximum_seating = max(df$maximum_seating) - min(df$maximum_seating)
+range_maximum_seating
+range_engine_cylinders = max(df$engine_cylinders) - min(df$engine_cylinders)
+range_engine_cylinders
+range_owner_count = max(df$owner_count) - min(df$owner_count)
+range_owner_count
+
 
 # Calculating min, 1st quartile, median, 3rd quartile, max
 fivenum(df$mileage, na.rm = TRUE)
@@ -370,6 +391,11 @@ fivenum(df$wheelbase)
 fivenum(df$fuel_tank_volume)
 fivenum(df$back_legroom)
 fivenum(df$front_legroom, na.rm = TRUE)
+fivenum(df$age_car)
+fivenum(df$condition)
+fivenum(df$maximum_seating)
+fivenum(df$owner_count)
+fivenum(df$engine_cylinders)
 
 #Interquartile Range
 IQR(df$mileage, na.rm = TRUE)
@@ -386,6 +412,11 @@ IQR(df$wheelbase)
 IQR(df$fuel_tank_volume)
 IQR(df$back_legroom)
 IQR(df$front_legroom, na.rm = TRUE)
+IQR(df$age_car)
+IQR(df$maximum_seating)
+IQR(df$engine_cylinders)
+IQR(df$owner_count)
+IQR(df$condition)
 
 #Standard Deviation
 sd(df$mileage, na.rm = TRUE)
@@ -401,7 +432,13 @@ sd(df$height)
 sd(df$wheelbase)
 sd(df$fuel_tank_volume)
 sd(df$back_legroom)
+sd(df$age_car)
 sd(df$front_legroom, na.rm = TRUE)
+sd(df$engine_cylinders)
+sd(df$maximum_seating)
+sd(df$owner_count)
+sd(df$condition)
+
 
 #c. Are there any values that seem extreme? 
 
@@ -419,6 +456,11 @@ boxplot(df$height)
 boxplot(df$wheelbase)
 boxplot(df$fuel_tank_volume)
 boxplot(df$back_legroom)
+boxplot(df$age_car)
+boxplot(df$condition)
+boxplot(df$owner_count)
+boxplot(df$maximum_seating)
+boxplot(df$engine_cylinders)
 boxplot(df$front_legroom, na.rm = TRUE)
 
 # #Treating outliers
@@ -435,6 +477,11 @@ boxplot(df$front_legroom, na.rm = TRUE)
 # IQR_wheelbase = IQR(df$wheelbase)
 # IQR_fuel_tank_volume = IQR(df$fuel_tank_volume)
 # IQR_back_legroom = IQR(df$back_legroom)
+# IQR_age_car = IQR(df$age_car)
+# IQR_condition = IQR(df$condition)
+# IQR_owner_count = IQR(df$owner_count)
+# IQR_maximum_seating = IQR(df$maximum_seating)
+# IQR_engine_cylinders = IQR(df$engine_cylinders)
 # IQR_front_legroom = IQR(df$front_legroom, na.rm = TRUE)
 # 
 # first_quantile_price = quantile(df$price, 0.25)
@@ -520,6 +567,13 @@ boxplot(df$front_legroom, na.rm = TRUE)
 # third_quantile_back_legroom = quantile(df$back_legroom, 0.75)
 # low_outliers_back_legroom = third_quantile_back_legroom - 1.5 * IQR_back_legroom
 # low_outliers_back_legroom
+#
+# first_quantile_age_car = quantile(df$age_car, 0.25)
+# up_outliers_age_car = first_quantile_age_car + 1.5 * IQR_age_car
+# up_outliers_age_car
+# third_quantile_age_car = quantile(df$age_car, 0.75)
+# low_outliers_age_car = third_quantile_age_car - 1.5 * IQR_age_car
+# low_outliers_age_car
 # 
 # first_quantile_front_legroom = quantile(df$front_legroom, 0.25, na.rm = TRUE)
 # up_outliers_front_legroom = first_quantile_front_legroom + 1.5 * IQR_front_legroom
@@ -527,8 +581,36 @@ boxplot(df$front_legroom, na.rm = TRUE)
 # third_quantile_front_legroom = quantile(df$front_legroom, 0.75, na.rm = TRUE)
 # low_outliers_front_legroom = third_quantile_front_legroom - 1.5 * IQR_front_legroom
 # low_outliers_front_legroom
+#
+# first_quantile_owner_count = quantile(df$owner_count, 0.25, na.rm = TRUE)
+# up_outliers_owner_count = first_quantile_owner_count + 1.5 * IQR_owner_count
+# up_outliers_owner_count
+# third_quantile_owner_count = quantile(df$owner_count, 0.75, na.rm = TRUE)
+# low_outliers_owner_count = third_quantile_owner_count - 1.5 * IQR_owner_count
+# low_outliers_owner_count
+#
+# first_quantile_engine_cylinders = quantile(df$engine_cylinders, 0.25, na.rm = TRUE)
+# up_outliers_engine_cylinders = first_quantile_engine_cylinders + 1.5 * IQR_engine_cylinders
+# up_outliers_engine_cylinders
+# third_quantile_engine_cylinders = quantile(df$engine_cylinders, 0.75, na.rm = TRUE)
+# low_outliers_engine_cylinders = third_quantile_engine_cylinders - 1.5 * IQR_engine_cylinders
+# low_outliers_engine_cylinders
+#
+# first_quantile_maximum_seating = quantile(df$maximum_seating, 0.25, na.rm = TRUE)
+# up_outliers_maximum_seating = first_quantile_maximum_seating + 1.5 * IQR_maximum_seating
+# up_outliers_maximum_seating
+# third_quantile_maximum_seating = quantile(df$maximum_seating, 0.75, na.rm = TRUE)
+# low_outliers_maximum_seating = third_quantile_maximum_seating - 1.5 * IQR_maximum_seating
+# low_outliers_maximum_seating
+#
+# first_quantile_condition = quantile(df$condition, 0.25, na.rm = TRUE)
+# up_outliers_condition = first_quantile_condition + 1.5 * IQR_condition
+# up_outliers_condition
+# third_quantile_condition = quantile(df$condition, 0.75, na.rm = TRUE)
+# low_outliers_condition = third_quantile_condition - 1.5 * IQR_condition
+# low_outliers_condition
 # 
-# df = subset(df, df$price >= low_outliers_price & df$price <= up_outliers_price & df$mileage >= low_outliers_mileage & df$mileage <= up_outliers_mileage & df$mileage >= low_outliers_mileage & df$mileage <= up_outliers_mileage & df$engine_displacement >= low_outliers_engine_displacement & df$engine_displacement <= up_outliers_engine_displacement & df$horsepower >= low_outliers_horsepower & df$horsepower <= up_outliers_horsepower & df$daysonmarket >= low_outliers_daysonmarket & df$daysonmarket <= up_outliers_daysonmarket & df$length >= low_outliers_length & df$length <= up_outliers_length & df$city_fuel_economy >= low_outliers_city_fuel_economy & df$city_fuel_economy <= up_outliers_city_fuel_economy & df$highway_fuel_economy >= low_outliers_highway_fuel_economy & df$highway_fuel_economy <= up_outliers_highway_fuel_economy & df$height >= low_outliers_height & df$height <= up_outliers_height & df$wheelbase >= low_outliers_wheelbase & df$wheelbase <= up_outliers_wheelbase & df$fuel_tank_volume >= low_outliers_fuel_tank_volume & df$fuel_tank_volume <= up_outliers_fuel_tank_volume & df$back_legroom >= low_outliers_back_legroom & df$back_legroom <= up_outliers_back_legroom & df$front_legroom >= low_outliers_front_legroom & df$front_legroom <= up_outliers_front_legroom)
+# df = subset(df, df$price >= low_outliers_price & df$price <= up_outliers_price & df$mileage >= low_outliers_mileage & df$mileage <= up_outliers_mileage & df$mileage >= low_outliers_mileage & df$mileage <= up_outliers_mileage & df$engine_displacement >= low_outliers_engine_displacement & df$engine_displacement <= up_outliers_engine_displacement & df$horsepower >= low_outliers_horsepower & df$horsepower <= up_outliers_horsepower & df$daysonmarket >= low_outliers_daysonmarket & df$daysonmarket <= up_outliers_daysonmarket & df$length >= low_outliers_length & df$length <= up_outliers_length & df$city_fuel_economy >= low_outliers_city_fuel_economy & df$city_fuel_economy <= up_outliers_city_fuel_economy & df$highway_fuel_economy >= low_outliers_highway_fuel_economy & df$highway_fuel_economy <= up_outliers_highway_fuel_economy & df$height >= low_outliers_height & df$height <= up_outliers_height & df$wheelbase >= low_outliers_wheelbase & df$wheelbase <= up_outliers_wheelbase & df$fuel_tank_volume >= low_outliers_fuel_tank_volume & df$fuel_tank_volume <= up_outliers_fuel_tank_volume & df$back_legroom >= low_outliers_back_legroom & df$back_legroom <= up_outliers_back_legroom & df$front_legroom >= low_outliers_front_legroom & df$front_legroom <= up_outliers_front_legroom & df$age_car >= low_outliers_age_car & df$age_car <= up_outliers_age_car & df$condition >= low_outliers_condition & df$condition <= up_outliers_condition & df$owner_count >= low_outliers_owner_count & df$owner_count <= up_outliers_owner_count & df$maximum_seating >= low_outliers_maximum_seating & df$maximum_seating <= up_outliers_maximum_seating & df$engine_cylinders >= low_outliers_engine_cylinders & df$engine_cylinders <= up_outliers_engine_cylinders)
 # 
 # hist(df$price, breaks= 154, col = 'Orange')
 # hist(df$back_legroom, breaks = 154, col = 'Orange')
@@ -544,6 +626,12 @@ boxplot(df$front_legroom, na.rm = TRUE)
 # hist(df$mileage, breaks= 154, col = 'Orange', na.rm = TRUE)
 # hist(df$wheelbase, breaks= 154, col = 'Orange')
 # hist(df$width, breaks= 154, col = 'Orange')
+# hist(df$age_car, breaks= 154, col = 'Orange')
+# hist(df$condition, breaks= 154, col = 'Orange')
+# hist(df$maximum_seating, breaks= 154, col = 'Orange')
+# hist(df$owner_count, breaks= 154, col = 'Orange')
+# hist(df$engine_cylinders, breaks= 154, col = 'Orange')
+
 # 
 # boxplot(df$mileage, na.rm = TRUE) + title( main="mileage")
 # boxplot(df$price) + title( main="new_price")
@@ -557,7 +645,12 @@ boxplot(df$front_legroom, na.rm = TRUE)
 # boxplot(df$height) + title( main="height")
 # boxplot(df$wheelbase) + title( main="wheelbase")
 # boxplot(df$fuel_tank_volume) + title( main="fuel_tank_volume")
-# boxplot(df$back_legroom) + title( main="back_legroom")
+# boxplot(df$back_legroom) + title( main="back_legroom"
+# boxplot(df$age_car) + title( main="age_car"))
+# boxplot(df$condition) + title( main="condition"))
+# boxplot(df$maximum_seating) + title( main="maximum_seating"))
+# boxplot(df$owner_count) + title( main="owner_count"))
+# boxplot(df$engine_cylinders) + title( main="engine_cylinders"))
 # boxplot(df$front_legroom, na.rm = TRUE) + title( main="front_legroom")
 
 
@@ -576,10 +669,14 @@ df$height <- log(df$height)
 df$wheelbase <- log(df$wheelbase)
 df$fuel_tank_volume <- log(df$fuel_tank_volume)
 df$back_legroom <- log(df$back_legroom)
+df$age_car <- log(df$age_car)
+df$condition <- log(df$condition)
+df$maximum_seating <- log(df$maximum_seating)
+df$owner_count <- log(df$owner_count)
+df$engine_cylinders <- log(df$engine_cylinders)
 df$front_legroom <- log(df$front_legroom)
 
-#Restricting the value of daysofmarket to equal to or above zero. 
-df = subset(df, df$daysonmarket >= 0)
+summary(df)
 
 hist(df$price, breaks= 154, col = 'Orange')
 hist(df$back_legroom, breaks = 154, col = 'Orange')
@@ -595,6 +692,12 @@ hist(df$length, breaks= 154, col = 'Orange')
 hist(df$mileage, breaks= 154, col = 'Orange', na.rm = TRUE)
 hist(df$wheelbase, breaks= 154, col = 'Orange')
 hist(df$width, breaks= 154, col = 'Orange')
+hist(df$condition, breaks= 154, col = 'Orange')
+hist(df$maximum_seating, breaks= 154, col = 'Orange')
+hist(df$owner_count, breaks= 154, col = 'Orange')
+hist(df$engine_cylinders, breaks= 154, col = 'Orange')
+hist(df$age_car, breaks= 154, col = 'Orange')
+
 
 boxplot(df$mileage, na.rm = TRUE) + title( main="new_mileage")
 boxplot(df$price) + title( main="new_price")
@@ -609,6 +712,11 @@ boxplot(df$height) + title( main="new_height")
 boxplot(df$wheelbase) + title( main="new_wheelbase")
 boxplot(df$fuel_tank_volume) + title( main="new_fuel_tank_volume")
 boxplot(df$back_legroom) + title( main="new_back_legroom")
+boxplot(df$age_car) + title( main="new_age_car")
+boxplot(df$condition) + title( main="new_condition")
+boxplot(df$maximum_seating) + title( main="new_maximum_seating")
+boxplot(df$owner_count) + title( main="new_owner_count")
+boxplot(df$engine_cylinders) + title( main="new_engine_cylinders")
 boxplot(df$front_legroom, na.rm = TRUE) + title( main="new_front_legroom")
 
 ####################################################################################
@@ -620,6 +728,10 @@ boxplot(df$front_legroom, na.rm = TRUE) + title( main="new_front_legroom")
 a = sum(is.na(df))
 a
 summary(df)
+
+#Restricting the value of daysofmarket and age_car to equal to or above zero. 
+df = subset(df, df$daysonmarket >= 0)
+df = subset(df, df$age_car >= 0)
 
 # c. Apply the 3 methods of missing value and demonstrate the output (summary statistics and transformation plot) for each 
 # method in (4-b). (hint: the objective is to identify the impact of using each of the methods you mentioned 
@@ -673,11 +785,17 @@ summary(df)
 target <- df$price
 # Remove the target variable and create a new dataframe with only the 
 # attributes.
-used_car <- subset(df, select = -c(price, body_type, condition, engine_cylinders, fuel_type, make_name, maximum_seating, owner_count, salvage, transmission, wheel_system , age_car))
+used_car <- subset(df, select = -c(price, body_type, fuel_type, make_name, salvage, transmission, wheel_system, year))
 
 # Analyze the correlation of attributes
 # We explore the correlation between attributes in the dataset using ggcorr from GGally
 ggcorr(used_car, label=TRUE)
+
+# Other ways of visualizing correlation plots
+cor.plot(used_car, numbers = TRUE, cex = .5)
+# corclean <- cor(used_car)
+# round(corclean, digits = 3)
+# corrplot(corclean, method = "circle")
 
 # Without manually identifying the correlated variables from the plots, 
 # we can use the caret R package to automatically detect the highly 
@@ -689,6 +807,7 @@ ggcorr(used_car, label=TRUE)
 # and then get the cross-correlation among the variable.
 M <- data.matrix(used_car)
 corrM <- cor(M)
+corrplot(corrM)
 
 # Find the variables with higher cross-correlation
 
@@ -699,21 +818,103 @@ names(used_car)[highlyCorrM]
 # b. Which variables should be used for dimension reduction and why? Carry out dimensionality reduction
 #The following variables are highly correlated. We can remove one variable so the inter-correlation between variables 
 # will be minimum.
-# [1] "city_fuel_economy"              "highway_fuel_economy"           "horsepower"                    
-# [4] "fuel_tank_volume**"               "width"                          "wheel_system_Front_Wheel_Drive"
-# [7] "wheelbase**"                      "height**"                         "transmission_Automatic"        
-# [10] "body_type_SUV_Crossover"        "fuel_type_Gasoline"             "mileage"                       
-# [13] "salvage_False"  
+# [1] "city_fuel_economy"              "highway_fuel_economy"           "horsepower"                     "fuel_tank_volume"              
+# [5] "width"                          "wheel_system_Front_Wheel_Drive" "engine_displacement"            "wheelbase"                     
+# [9] "height"                         "transmission_Automatic"         "body_type_SUV_Crossover"        "fuel_type_Gasoline"            
+# [13] "age_car"                        "salvage_False" 
 
-used_car_reduced <- subset(used_car, select = -c(height, wheelbase, highway_fuel_economy, engine_displacement, length, horsepower))
-View(used_car_reduced)
+#used_car_reduced <- subset(used_car, select = -c(height, city_fuel_economy, fuel_tank_volume, horsepower, length))
+
+used_car_reduced <- used_car
 
 # c. Explore the distribution of selected variables (from step 5-a) against the target variable. Explain.
 ggcorr(used_car_reduced , label=TRUE)
+cor.plot(used_car_reduced, numbers = TRUE, cex = .5)
+
 
 # Merge the target variable back to the dataset
 used_car_reduced$price <- target
-View(used_car_reduced)
+summary(used_car_reduced)
 
 ggcorr(used_car_reduced, label=TRUE)
+cor.plot(used_car_reduced, numbers = TRUE, cex = .5)
+
 ExpData(data=used_car_reduced,type=2, fun = c("mean", "median", "var"))
+
+#Data Partition
+smp_size <- floor(2/3 * nrow(used_car_reduced)) 
+set.seed(2)
+
+#Sample dataset
+used_car_reduced <-
+used_car_reduced[sample(nrow(used_car_reduced)), ]
+
+# Create train and test datasets
+used_car.train <- used_car_reduced[1:smp_size, ] 
+used_car.test <- used_car_reduced[(smp_size+1):nrow(used_car_reduced), ] 
+nrow(used_car.train)
+nrow(used_car.test)
+
+#Specifying target and input variables
+# In this step we specify the target variable and input variables to the regression model. It is 
+# specified in the format formula <- A ~ B + C + D in which A is the target variable name and B,C,D 
+# are the names of inputs. 
+# To specify all variables as input we can use '.' Instead of mentioning all attribute names. 
+# Therefore, for this dataset we specify the formula as follows:
+formula = price ~.
+
+#fit the linear regression algorithm
+model <- lm(formula = formula, data = used_car.train)
+
+# Display the coefficients of the linear regression model
+summary(model)$coefficients
+
+#Regression equation
+as.formula(
+  paste0("y ~ ", round(coefficients(model)[1],2), " + ", 
+         paste(sprintf("%.2f * %s",coefficients(model)[-1],
+                       names(coefficients(model)[-1])), 
+               collapse=" + ")
+  )
+)
+
+# Make Predictions for test and train dataset
+used_car.train$predicted.price <- predict(model, used_car.train)
+used_car.test$predicted.price <- predict(model, used_car.test)
+
+print("Actual Values")
+head(used_car.test$price[1:5])
+print("Predicted Values")
+head(used_car.test$predicted.price[1:5])
+
+# Plot Predicted values vs Actual values of the target variable
+pl1 <-used_car.test %>%
+ggplot(aes(price,predicted.price)) +
+  geom_point(alpha=0.5) +
+  stat_smooth(aes(colour='red')) +
+  xlab('Actual value of price') +
+  ylab('Predicted value of price')+
+  theme_bw()
+ggplotly(pl1)
+
+#  Model assessment with R-Squared and Root Mean Squared Error (RMSE)
+
+# Calculate the R-squared value
+
+r_squared <- summary(model)$r.squared
+print(paste("R Squared: ", r_squared))
+
+# Calculate the Root Mean Squared Error (RMSE)
+
+error <- used_car.test$price-used_car.test$predicted.price
+rmse <- sqrt(mean(error^2))
+print(paste("Root Mean Square Error: ", rmse))
+
+# [1] "R Squared:  0.865726083321077"
+# > 
+#   > # Calculate the Root Mean Squared Error (RMSE)
+#   > 
+#   > error <- used_car.test$price-used_car.test$predicted.price
+# > rmse <- sqrt(mean(error^2))
+# > print(paste("Root Mean Square Error: ", rmse))
+# [1] "Root Mean Square Error:  0.16724699370683"
