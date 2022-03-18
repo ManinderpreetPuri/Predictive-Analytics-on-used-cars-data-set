@@ -1,6 +1,4 @@
-# Name: Maninderpreet Singh Puri
-# Student ID: 20494381
-# BUS5PA Assignment 1- Part 3
+# PA- Part 3
 
 ###################################################################################################
 #install.packages("psych", dependencies = TRUE)
